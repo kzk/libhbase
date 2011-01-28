@@ -1,5 +1,5 @@
-#ifndef _THREAD_MUTEX_HPP_
-#define _THREAD_MUTEX_HPP_
+#ifndef _HADOOP_UTIL_LOCK_HPP_
+#define _HADOOP_UTIL_LOCK_HPP_
 
 #include <pthread.h>
 
@@ -9,6 +9,7 @@ namespace hadoop {
 namespace util {
 
 class Lock {
+  friend class Condition;
 public:
   Lock() { pthread_mutex_init(&m, NULL); }
   ~Lock() { pthread_mutex_destroy(&m); }
@@ -31,4 +32,4 @@ private:
 } // namespace util
 } // namespace hadoop
 
-#endif /* Not def: _THREAD_MUTEX_HPP_ */
+#endif /* Not def: _HADOOP_UTIL_LOCK_HPP_ */

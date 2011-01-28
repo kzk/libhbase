@@ -1,5 +1,6 @@
 #include "zookeeper_node_tracker.hpp"
 #include "zookeeper_watcher.hpp"
+#include "util/condition.hpp"
 
 #include <zookeeper.h>
 
