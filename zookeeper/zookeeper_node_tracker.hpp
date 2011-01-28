@@ -3,6 +3,7 @@
 
 #include "zookeeper_event.hpp"
 #include "zookeeper_util.hpp"
+#include "util/lock.hpp"
 
 namespace hadoop {
 namespace zookeeper {
@@ -16,7 +17,10 @@ public:
 
   int start();
   void getPath(std::string& p) { p = path; }
-  void getData(std::vector<char>& d) { d = data; };
+  void getData(std::vector<char>& d) {
+    hadoop::util::ScopedLock lk(data_lk);
+    d = data;
+  };
 
 public:
   // callbacks
@@ -25,6 +29,8 @@ public:
   virtual void onDataChanged(const std::string& path);
 
 protected:
+  hadoop::util::Lock data_lk;
+
   std::string path;
   std::vector<char> data;
   ZooKeeperWatcher *w;
