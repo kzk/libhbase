@@ -18,7 +18,7 @@ public:
     : ZooKeeperNodeTracker(w, "/hbase/master") {}
   virtual ~MasterAddressTracker() {}
 
-  bool hasMaster() const { return !data.empty();}
+  bool hasMaster() const { return !data.empty(); }
   std::string getMasterAddress() {
     return hasMaster() ? std::string((const char*)&data[0]) : std::string();
   }

@@ -31,12 +31,6 @@ ZooKeeperWatcher::~ZooKeeperWatcher()
     zookeeper_close(zk);
     zk = NULL;
   }
-
-  events.erase(unique(events.begin(), events.end()), events.end());
-  for (unsigned int i = 0; i < events.size(); i++) {
-    cerr << "p=" << events[i] << endl;
-    delete events[i];
-  }
   events.clear();
 }
 

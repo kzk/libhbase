@@ -1,3 +1,4 @@
+#include "hbase/connection.hpp"
 #include "zookeeper/zookeeper_watcher.hpp"
 #include "hbase/master_address_tracker.hpp"
 #include <iostream>
@@ -6,6 +7,7 @@ using namespace std;
 
 int main()
 {
+  /*
   int r;
   hadoop::zookeeper::ZooKeeperWatcher w;
   r = w.initialize();
@@ -23,6 +25,10 @@ int main()
 
   string s((const char*)&data[0]);
   cerr << "addr: " << s << endl;
+  */
+
+  hadoop::hbase::Connection c;
+  cerr << c.initialize() << endl;
 
   return 0;
 }

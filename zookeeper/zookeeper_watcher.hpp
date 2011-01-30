@@ -4,6 +4,7 @@
 #include <zookeeper.h>
 #include <string>
 #include <vector>
+#include <iostream>
 
 namespace hadoop {
 namespace zookeeper {
