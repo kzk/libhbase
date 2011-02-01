@@ -1,6 +1,14 @@
 lib_LTLIBRARIES = libhbase.la
 
 libhbase_la_SOURCES = \
+  ./rpc/event_loop.hpp \
+  ./rpc/transport.hpp \
+  ./rpc/ev/ev_event_loop.hpp \
+  ./rpc/ev/ev_event_loop.cpp \
+  ./rpc/ev/ev_transport.hpp \
+  ./rpc/ev/ev_transport.cpp \
+  ./rpc/ev/ev_socket.hpp \
+  ./rpc/ev/ev_socket.cpp \
   ./hbase/connection.cpp \
   ./hbase/connection.hpp \
   ./hbase/connection_manager.hpp \
