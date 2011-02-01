@@ -10,8 +10,8 @@ using namespace std;
 namespace hadoop {
 namespace rpc {
 namespace ev {
-EvTransport::EvTransport(const string& addr)
-  : Transport(addr)
+EvTransport::EvTransport(EventLoop* loop, const string& addr)
+  : Transport(loop, addr)
 {
 }
 

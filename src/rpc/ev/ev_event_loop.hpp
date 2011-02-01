@@ -18,6 +18,8 @@ public:
   virtual void run();
   virtual void runOnce();
 
+  struct ev_loop* getLoop() const { return loop; }
+
 protected:
   struct ev_loop *loop;
 };

@@ -1,9 +1,11 @@
 #include "rpc/ev/ev_socket.hpp"
+#include "util/dns.hpp"
 
 #include <cassert>
 #include <vector>
 
 using namespace std;
+using namespace hadoop::util;
 
 namespace hadoop {
 namespace rpc {
@@ -37,10 +39,19 @@ EvSocket::~EvSocket()
 
 int EvSocket::open(const string& addr)
 {
+  int r;
   string::size_type idx = addr.find(':');
   if (idx == string::npos) return -1;
   string host = addr.substr(0, idx);
-  int port = atoi(addr.substr(idx+1).c_str());;
+  string port = addr.substr(idx+1);
+  if (host.empty() || atoi(port.c_str()) < 0)
+    return -1;
+
+  vector<IPv4Addr> addrs;
+  r = DNSResolver::resolve(host, port, addrs);
+  if (r != 0) return -1;
+
+  
 }
 
 int EvSocket::attach(struct ev_loop* loop)

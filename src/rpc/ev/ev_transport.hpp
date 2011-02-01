@@ -9,7 +9,7 @@ namespace ev {
 
 class EvTransport : public hadoop::rpc::Transport {
 public:
-  EvTransport(const std::string& addr);
+  EvTransport(EventLoop* loop, const std::string& addr);
   virtual ~EvTransport();
 
   virtual int open();

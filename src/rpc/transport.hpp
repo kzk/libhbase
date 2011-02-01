@@ -5,10 +5,12 @@
 
 namespace hadoop {
 namespace rpc {
+class EventLoop;
 
 class Transport {
 public:
-  Transport(const std::string& addr) : addr(addr) {}
+  Transport(EventLoop* loop, const std::string& addr)
+    : loop(loop), addr(addr) {}
   virtual ~Transport() {}
 
   virtual int open() = 0;
@@ -17,6 +19,7 @@ public:
   virtual void close() = 0;
 
 protected:
+  hadoop::rpc::EventLoop* loop;
   std::string addr;
 };
 

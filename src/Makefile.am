@@ -22,7 +22,9 @@ libhbase_la_SOURCES = \
   ./zookeeper/zookeeper_watcher.cpp \
   ./zookeeper/zookeeper_watcher.hpp \
   ./util/condition.hpp \
-  ./util/lock.hpp
+  ./util/lock.hpp \
+  ./util/dns.hpp \
+  ./util/dns.cpp
 
 libhbase_la_CXXFLAGS = \
   -I$(top_srcdir)/src/ \
@@ -30,3 +32,14 @@ libhbase_la_CXXFLAGS = \
 
 # -version-info CURRENT:REVISION:AGE
 libhbase_la_LDFLAGS = -version-info 1:0:0
+
+libhbase_la_LIBADD = -lzookeeper_mt
+
+# unittests
+check_PROGRAMS = \
+  dns_test
+
+dns_test_SOURCES = util/dns_test.cpp
+dns_test_LDADD = libhbase.la -lgtest_main -lgtest
+
+TESTS = $(check_PROGRAMS)
