@@ -24,7 +24,8 @@ libhbase_la_SOURCES = \
   ./util/condition.hpp \
   ./util/lock.hpp \
   ./util/dns.hpp \
-  ./util/dns.cpp
+  ./util/dns.cpp \
+  ./util/syscall.hpp
 
 libhbase_la_CXXFLAGS = \
   -I$(top_srcdir)/src/ \
@@ -37,7 +38,11 @@ libhbase_la_LIBADD = -lzookeeper_mt
 
 # unittests
 check_PROGRAMS = \
+  rpc_ev_ev_socket_test \
   dns_test
+
+rpc_ev_ev_socket_test_SOURCES = rpc/ev/ev_socket_test.cpp
+rpc_ev_ev_socket_test_LDADD = libhbase.la -lgtest_main -lgtest
 
 dns_test_SOURCES = util/dns_test.cpp
 dns_test_LDADD = libhbase.la -lgtest_main -lgtest
