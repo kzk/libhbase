@@ -14,11 +14,16 @@ Client::Client(const std::string& addr, EventLoop* loop)
 
 Client::~Client()
 {
+  if (tran) {
+    delete tran;
+    tran = NULL;
+  }
 }
 
 int Client::callAsync(void* msg, size_t msglen)
 {
   int r;
+  hadoop::util::ScopedLock lk(cln_lk);
   if (!tran->isOpened()) {
     r = tran->open();
     if (r != 0) return -1;
@@ -29,6 +34,8 @@ int Client::callAsync(void* msg, size_t msglen)
 
 void Client::close()
 {
+  hadoop::util::ScopedLock lk(cln_lk);
+  tran->close();
 }
 
 } // namespace rpc
