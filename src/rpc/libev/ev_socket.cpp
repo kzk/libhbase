@@ -1,4 +1,5 @@
-#include "rpc/ev/ev_socket.hpp"
+#include "rpc/libev/ev_socket.hpp"
+#include "rpc/libev/ev_event_loop.hpp"
 #include "util/dns.hpp"
 #include "util/syscall.hpp"
 
@@ -36,7 +37,9 @@ void read_cb(struct ev_loop* loop, ev_io* watcher, int revents)
 } // namespace
 
 EvSocket::EvSocket()
-  : watcher(new EvSocketWatcher())
+  : fd(-1),
+    loop(NULL),
+    watcher(new EvSocketWatcher())
 {
   watcher->ptr = this;
 }
@@ -77,7 +80,7 @@ int EvSocket::open(const string& addr)
   // TODO: non-blocking connect(2), to hide the 3-way handshake latency.
 
   bool succeed = false;
-  for (unsigned int i = 0; addrs.size(); i++) {
+  for (unsigned int i = 0; i < addrs.size(); i++) {
     sockaddr_in addrin = {};
     addrin.sin_family = PF_INET;
     addrin.sin_addr.s_addr = inet_addr(addrs[i].toString().c_str());
@@ -89,16 +92,36 @@ int EvSocket::open(const string& addr)
       break;
     }
   }
+  
   if (succeed) fd = sock;
+  return succeed ? 0 : -1;;
+}
+
+int EvSocket::send(void* msg, size_t msglen)
+{
+  // 2011/02/13 Kazuki Ohta <kazuki.ohta@gmail.com>
+  // write(2) loop for the message. This assumes socket is always writable.
+  // Must be changed when we use the non-blocking socket.
+  const char *p = reinterpret_cast<const char*>(msg);
+  const char * const endp = p + msglen;
+  while (p < endp) {
+    int num_bytes;
+    NO_INTR(num_bytes, write(fd, p, endp - p));
+    if (num_bytes < 0) {
+      perror("write failed");
+      return -1;
+    }
+    p += num_bytes;
+  }
   return 0;
 }
 
-int EvSocket::attach(struct ev_loop* l)
+int EvSocket::attach(EvEventLoop* l)
 {
   assert(fd >= 0);
   loop = l;
   ev_io_init(&watcher->io, read_cb, fd, EV_READ);
-  ev_io_start(loop, &watcher->io);
+  ev_io_start(loop->getLoop(), &watcher->io);
   return 0;
 }
 
@@ -110,8 +133,7 @@ int EvSocket::onRead(int revents)
 
 void EvSocket::close()
 {
-  if (loop)
-    ev_io_stop(loop, &watcher->io);
+  if (loop) ev_io_stop(loop->getLoop(), &watcher->io);
 
   if (watcher) delete watcher;
   watcher = NULL;

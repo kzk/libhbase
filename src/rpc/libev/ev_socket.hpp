@@ -8,6 +8,7 @@ namespace hadoop {
 namespace rpc {
 namespace ev {
 class EvSocketWatcher;
+class EvEventLoop;
 
 class EvSocket {
 public:
@@ -15,13 +16,18 @@ public:
   ~EvSocket();
 
   int open(const std::string& addr);
-  int attach(struct ev_loop* loop);
-  int onRead(int revents);
+  int send(void* msg, size_t msglen);
+  int attach(EvEventLoop* loop);
   void close();
+
+public:
+  // 2011/02/13 Kazuki Ohta <kazuki.ohta@gmail.com>
+  // public member for the callback function from libev.
+  int onRead(int revents);
 
 protected:
   int fd;
-  struct ev_loop* loop;
+  struct EvEventLoop* loop;
   struct EvSocketWatcher* watcher;
 };
 
